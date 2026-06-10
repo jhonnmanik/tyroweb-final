@@ -1,7 +1,6 @@
 /**
  * auth-nav.js
- * Script cek status login & update navbar secara otomatis.
- * Include di semua halaman: <script src="scripts/auth-nav.js"></script>
+ * Klik profil -> dashboard.html
  */
 
 (async function initAuthNav() {
@@ -13,26 +12,51 @@
     const data = await res.json();
 
     if (data.logged_in) {
-      // Tampilkan info user + tombol logout
       authItem.innerHTML = `
-        <div class="nav-user-info">
-          <div class="nav-user-avatar">👤</div>
-          <span>${data.user.username}</span>
-          <button class="btn-nav-logout" onclick="logoutUser()">Keluar</button>
-        </div>`;
+        <div class="nav-user-wrapper">
+
+          <a href="dashboard.html" class="nav-user-card">
+            <div class="nav-user-left">
+
+              <div class="nav-user-avatar">
+                ${data.user.username.charAt(0).toUpperCase()}
+              </div>
+
+              <span class="nav-user-name">
+                ${data.user.username}
+              </span>
+
+            </div>
+          </a>
+
+          <button class="btn-nav-logout" onclick="logoutUser()">
+            Keluar
+          </button>
+
+        </div>
+      `;
     } else {
-      // Tampilkan tombol Login
-      authItem.innerHTML = `<a href="login.html" class="btn-nav-login">Masuk</a>`;
+      authItem.innerHTML = `
+        <a href="login.html" class="btn-nav-login">
+          Masuk
+        </a>
+      `;
     }
   } catch (e) {
-    // Server belum jalan / offline — tetap tampilkan tombol Login
-    authItem.innerHTML = `<a href="login.html" class="btn-nav-login">Masuk</a>`;
+    authItem.innerHTML = `
+      <a href="login.html" class="btn-nav-login">
+        Masuk
+      </a>
+    `;
   }
 })();
 
 async function logoutUser() {
   try {
-    await fetch('/api/auth/logout', { method: 'POST' });
-  } catch(e) {}
-  window.location.reload();
+    await fetch('/api/auth/logout', {
+      method: 'POST'
+    });
+  } catch (e) {}
+
+  window.location.href = 'index.html';
 }
